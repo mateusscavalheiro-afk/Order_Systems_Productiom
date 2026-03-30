@@ -45,5 +45,5 @@ def init_db():
     # commit() Saves changes in .db file
     conn.commit()
     print("Database successfully initialized!")
-    
+
 init_db()
