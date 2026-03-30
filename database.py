@@ -37,11 +37,11 @@ def init_db():
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     product TEXT NOT NULL,
     quantity INTEGER NOT NULL,
-    status TEXT DEFAULT 'Pendente',
+    status TEXT DEFAULT 'Pendent',
     created_at TEXT DEFAULT (datetime('now', 'localtime'))
     )
     ''')
-    
+
     # commit() Saves changes in .db file
     conn.commit()
     print("Database successfully initialized!")
