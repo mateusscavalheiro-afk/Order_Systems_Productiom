@@ -27,10 +27,10 @@ def init_db():
     '''
     
     conn = get_connection()
-    
+
     # Cursor allows the execution of SQL commands
     cursor = conn.cursor()
-    
+
     # 'IF NOT EXISTS' ensures the command don't fails if the table exists
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS orders (
