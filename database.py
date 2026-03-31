@@ -3,7 +3,7 @@ import sqlite3
 
 # Constant with name of the database
 # The file will be created during the first execution
-db_order = 'orders.bd'
+db_order = 'orders.db'
 
 def get_connection():
     '''
