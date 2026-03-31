@@ -30,14 +30,14 @@ def init_db():
 
     # Cursor allows the execution of SQL commands
     cursor = conn.cursor()
-
+    
     # 'IF NOT EXISTS' ensures the command don't fails if the table exists
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     product TEXT NOT NULL,
     quantity INTEGER NOT NULL,
-    status TEXT DEFAULT 'Pendent',
+    status TEXT DEFAULT 'Pending',
     created_at TEXT DEFAULT (datetime('now', 'localtime'))
     )
     ''')
