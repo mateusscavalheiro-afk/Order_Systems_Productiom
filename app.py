@@ -31,52 +31,59 @@ def status():
         "message": "Hello Factory, API working!"
     })
 
-#Route Nº3 - List all orders (GET)
+# Route Nº3 - List all orders (GET)
 @app.route('/orders', methods=['GET'])
-
 def list_orders():
     '''
-    LIST ALL REGISTEREDF PRODUCTION ORDERS
+    LIST ALL REGISTERED PRODUCTION ORDERS (Supports filtering by status)
     METHODS HTTP: GET
-    URL: https://localhost:5000/orders
+    URL: http://localhost:5000/orders?status=Pending
     Returns: Orders and list in JSON format
     '''
+    status_filter = request.args.get('status')
     
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM orders ORDER BY id DESC')
+    
+    if status_filter:
+        # Added a comma after status_filter to make it a valid tuple
+        cursor.execute(
+            'SELECT * FROM orders WHERE status = ? ORDER BY id DESC', (status_filter,)
+        )
+    else:
+        cursor.execute('SELECT * FROM orders ORDER BY id DESC')
+        
     orders = cursor.fetchall()
     conn.close()
     
-    # Converts every SQLite Row in Python dictionary to serialize in JSOn
     return jsonify([dict(o) for o in orders])
 
-# ── ROUTE: Get a specific order by ID (GET) ────────
+# Route Nº4 - Get a specific order by ID (GET)
 @app.route('/orders/<int:order_id>', methods=['GET'])
 def search_order(order_id):
     """
-    Search an unic production order.
-    URL parametersL:
+    Search a unique production order.
+    URL parameters:
         order_id (int): ID of the order to be searched.
     Returns:
-        200 + JSON of order, if found it.
-        404 + error message, if not exist.
+        200 + JSON of order, if found.
+        404 + error message, if it does not exist.
     """
-    
     conn = get_connection()
     cursor = conn.cursor()
     
-    # The '?' switchs the id in safely way
+    # The '?' switches the id in a safe way
     cursor.execute('SELECT * FROM orders WHERE id = ?', (order_id,))
-    order = cursor.fetchone() # fetchone() returns an unic register or none
+    order = cursor.fetchone() 
     conn.close()
     
-    # Se o ID nao existir, retornamos 404
+    # If ID doesn't exist, we show an error
     if order is None:
         return jsonify({'error': f'Order {order_id} not found.'}), 404
+        
     return jsonify(dict(order)), 200
 
-# ── ROUTE: Create a new order (POST) ──────────────
+# Route Nº5 - Create a new order (POST)
 @app.route('/orders', methods=['POST'])
 def create_order():
     """
@@ -92,7 +99,7 @@ def create_order():
     """
     
     data = request.get_json()
-    # ── Input validation ───────────────────────────────
+    # ── Input validation ── 
     
     # Verify if body was sended and the JSON is valid
     if not data:
@@ -122,7 +129,7 @@ def create_order():
     if status not in valid_status:
         return jsonify({'error': f'Invalid status. Use: {valid_status}'}), 400
     
-    # ── Database insert ───────────────────────────────────
+    # ── Database insert ── 
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
@@ -143,7 +150,7 @@ def create_order():
     # Returns 201 Created with complete register
     return jsonify(dict(new_order)), 201
 
-# ── ROUTE: Order status update (PUT) ───────────────
+# Route Nº6 - Order status update (PUT)
 @app.route('/orders/<int:order_id>', methods=['PUT'])
 def update_order(order_id):
     """
@@ -191,7 +198,7 @@ def update_order(order_id):
     conn.close()
     return jsonify(dict(updated_order)), 200
 
-# ── ROUTE: Remove an order (DELETE) ───────────────────────
+# Route Nº7 - Remove an order (DELETE) 
 @app.route('/orders/<int:order_id>', methods=['DELETE'])
 def remove_order(order_id):
     """
@@ -221,7 +228,7 @@ def remove_order(order_id):
     conn.close()
     return jsonify({
         'message': f'Order {order_id} ({name_product}) removed with success.', 'id_removed': order_id}), 200
-
+    
 # STARTING POINT
 if __name__== '__main__':
     init_db()
