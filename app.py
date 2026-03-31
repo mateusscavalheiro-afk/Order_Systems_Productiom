@@ -72,12 +72,12 @@ def search_order(order_id):
     
     # Se o ID nao existir, retornamos 404
     if order is None:
-        return jsonify({'erro': f'Order {order_id} not found.'}), 404
+        return jsonify({'error': f'Order {order_id} not found.'}), 404
     return jsonify(dict(order)), 200
 
 # ── ROUTE: Create a new order (POST) ──────────────
 @app.route('/orders', methods=['POST'])
-def crate_order():
+def create_order():
     """
     Create a new production order from sended JSON data 
     
