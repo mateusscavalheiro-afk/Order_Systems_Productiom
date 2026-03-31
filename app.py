@@ -66,8 +66,8 @@ def search_order(order_id):
     cursor = conn.cursor()
     
     # The '?' switchs the id in safely way
-    cursor.execute('SELECT * FROM ordens WHERE id = ?', (order_id,))
-    order = cursor.fetchone() # fetchone() returns a unic register or none
+    cursor.execute('SELECT * FROM orders WHERE id = ?', (order_id,))
+    order = cursor.fetchone() # fetchone() returns an unic register or none
     conn.close()
     
     # Se o ID nao existir, retornamos 404
