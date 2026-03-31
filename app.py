@@ -6,7 +6,7 @@ from database import init_db, get_connection
 # Create an Flash's application instance
 app = Flask(__name__, static_folder='static', static_url_path='')
 
-# Habilitate CORS
+# Habilitate CORS gggg
 CORS(app)
 
 # Route Nº1 - Initial screen
