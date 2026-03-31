@@ -51,6 +51,30 @@ def list_orders():
     # Converts every SQLite Row in Python dictionary to serialize in JSOn
     return jsonify([dict(o) for o in orders])
 
+# ── ROUTE: Get a specific order by ID (GET) ────────
+@app.route('/orders/<int:order_id>', methods=['GET'])
+def search_order(order_id):
+    """
+    Search an unic production order.
+    URL parametersL:
+        order_id (int): ID of the order to be searched.
+    Retorns:
+        200 + JSON of order, if found it.
+        404 + error message, if not exist.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    # The '?' switchs the id in safely way
+    cursor.execute('SELECT * FROM ordens WHERE id = ?', (order_id,))
+    order = cursor.fetchone() # fetchone() returns a unic register or none
+    conn.close()
+    
+    # Se o ID nao existir, retornamos 404
+    if order is None:
+        return jsonify({'erro': f'Order {order_id} not found.'}), 404
+    return jsonify(dict(order)), 200
+
 # STARTING POINT
 if __name__== '__main__':
     init_db()
