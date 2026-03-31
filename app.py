@@ -62,6 +62,7 @@ def search_order(order_id):
         200 + JSON of order, if found it.
         404 + error message, if not exist.
     """
+    
     conn = get_connection()
     cursor = conn.cursor()
     
@@ -89,6 +90,7 @@ def create_order():
         201 + Created JSON order, in successfully cases.
         400 + error message, if invalid data.
     """
+    
     data = request.get_json()
     # ── Input validation ───────────────────────────────
     
@@ -156,6 +158,7 @@ def update_order(order_id):
         400 + error if invalid status.
         404 + error if order not found.
     """
+    
     data = request.get_json()
     if not data:
         return jsonify({'error': 'Missing or invalid request body.'}), 400
@@ -187,6 +190,37 @@ def update_order(order_id):
     updated_order = cursor.fetchone()
     conn.close()
     return jsonify(dict(updated_order)), 200
+
+# ── ROUTE: Remove an order (DELETE) ───────────────────────
+@app.route('/orders/<int:order_id>', methods=['DELETE'])
+def remove_order(order_id):
+    """
+    Remove permanently an order searched by ID
+    URL parameters:
+        order_id (int): removed ID order
+    Returns:
+        200 + confirmation message.
+        404 + error if order not found.
+    """
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+    # Verify the existance before DELETE
+    cursor.execute('SELECT id, product FROM orders WHERE id = ?',(order_id,))
+    order = cursor.fetchone()
+    if order is None:
+        conn.close()
+        return jsonify({'error': f'Order {order_id} not found.'}), 404
+
+    # Save the prodcut name to use in confirmation message
+    name_product = order['product']
+    
+    # Remove
+    cursor.execute('DELETE FROM orders WHERE id = ?', (order_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({
+        'message': f'Order {order_id} ({name_product}) removed with success.', 'id_removed': order_id}), 200
 
 # STARTING POINT
 if __name__== '__main__':
