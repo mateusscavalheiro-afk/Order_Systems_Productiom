@@ -350,18 +350,18 @@
     </main>
 
     <script>
-        // URL base da API Flask
-        // Em produção, trocamos por: 'https://meuservidor.com.br'
+        // URL API base Flask
+        // In production, switch: 'https://meuservidor.com.br'
         const API_URL = 'http://localhost:5000';
         // ────────────────────────────────────────────────────────
-        async function verificarStatus() {
+        async function verifyStatus() {
             const badge = document.getElementById('status-badge');
             try {
                 const resp = await fetch(`${API_URL}/status`);
-                const dados = await resp.json();
-                badge.textContent = `API Online | ${dados.total_ordens} ordens`;
+                const data = await resp.json();
+                badge.textContent = `API Online | ${data.total_orders} orders`;
                 badge.className = 'online';
-            } catch (erro) {
+            } catch (error) {
                 badge.textContent = 'API Offline';
                 badge.className = 'offline';
             }
