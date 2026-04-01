@@ -340,7 +340,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="table-corpse">
+                    <tbody id="corpse-table">
                         <!-- Registered lines by JavaScript -->
                     </tbody>
                 </table>
@@ -351,15 +351,16 @@
 
     <script>
         // URL API base Flask
-        // In production, switch: 'https://meuservidor.com.br'
         const API_URL = 'http://localhost:5000';
+
         // ────────────────────────────────────────────────────────
         async function verifyStatus() {
             const badge = document.getElementById('status-badge');
             try {
                 const resp = await fetch(`${API_URL}/status`);
                 const data = await resp.json();
-                badge.textContent = `API Online | ${data.total_orders} orders`;
+                // app.py doesn't return total_orders, so we just show it's online
+                badge.textContent = `API Online`;
                 badge.className = 'online';
             } catch (error) {
                 badge.textContent = 'API Offline';
@@ -371,24 +372,27 @@
             const loading = document.getElementById('loading');
             const noData = document.getElementById('no-data');
             const table = document.getElementById('orders-table');
-            const corpse = document.getElementById('corpse-table');
+            const corpse = document.getElementById('table-corpse'); // FIXED ID
+
             // Shows the loading indicator and hide the table
             loading.classList.remove('ocult');
             table.classList.add('ocult');
             noData.classList.add('ocult');
 
             try {
-                // Query GET /orders
                 const awnser = await fetch(`${API_URL}/orders`);
-                // Convert the awnser (text JSON) in array JavaScript
                 const orders = await awnser.json();
-                // Hide loading
+
                 loading.classList.add('ocult');
+
                 // If don't have orders, show message and exit function
                 if (orders.length === 0) {
                     noData.classList.remove('ocult');
                     return;
                 }
+
+                // Show table if there is data
+                table.classList.remove('ocult');
 
                 // For every order, create one line <tr> in table
                 corpse.innerHTML = orders.map(order => `
@@ -396,8 +400,7 @@
                         <td>${order.id}</td>
                         <td>${order.product}</td>
                         <td>${order.quantity}</td>
-                        <td>${renderizarBadge(order.status)}</td>
-                        <td>${order.created_at}</td>
+                        <td>${renderBadge(order.status)}</td> <td>${order.created_at || ''}</td>
                         <td>
                             <select class="select-status"
                                 onchange="updateStatus(${order.id}, this.value)">
@@ -422,7 +425,6 @@
                     </tr>
                 `).join('');
 
-                // Shows the complete table
             } catch (erro) {
                 loading.classList.add('ocult');
                 console.error('Error in load orders:', erro);
@@ -444,8 +446,8 @@
         async function createOrder() {
             // Captures the values from the HTML fields
             const product = document.getElementById('product').value.trim();
-            const quantity = document.getElementById('quantitye').value;
-            const status = document.getElementById('new-status').value;
+            const quantity = document.getElementById('quantity').value; // FIXED ID
+            const status = document.getElementById('initial-status').value; // FIXED ID
 
             // Front-end validation (before calling the API)
             if (!product) {
@@ -479,24 +481,20 @@
 
                 const data = await response.json();
 
-                if (response.ok) { // response.ok is true for status 200-299
+                if (response.ok) {
                     showMessage(`Order #${data.id} registered successfully!`, 'sucess');
                     clearForm();
-                    await loadOrders(); // Updates the table
-
-                    // Only call checkStatus if you created the verificarStatus() function
-                    if (typeof checkStatus === 'function') await checkStatus();
+                    await loadOrders();
+                    await verifyStatus(); // FIXED function call
                 } else {
-                    // Shows the error message returned by Flask
                     showMessage(data.error || 'Error trying to register.', 'error');
                 }
             } catch (error) {
                 showMessage('Connection error with the API.', 'error');
                 console.error(error);
             } finally {
-                // The finally block ALWAYS executes
                 btn.disabled = false;
-                btn.textContent = 'Register Order';
+                btn.textContent = 'Create Order';
             }
         }
 
@@ -504,7 +502,7 @@
         function clearForm() {
             document.getElementById('product').value = '';
             document.getElementById('quantity').value = '';
-            document.getElementById('new-status').value = 'Pending';
+            document.getElementById('initial-status').value = 'Pending'; // FIXED ID
         }
 
         async function updateStatus(id, newStatus) {
@@ -522,7 +520,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showMessage(`Status for Order #${id} updated to '${newStatus}'.`, 'success');
+                    showMessage(`Status for Order #${id} updated to '${newStatus}'.`, 'sucess'); // Fixed 'sucess' to match CSS
 
                     // Updates just the badge in the row without reloading the page
                     const row = document.getElementById(`line-${id}`);
@@ -530,9 +528,9 @@
                         const tdStatus = row.cells[3];
                         tdStatus.innerHTML = renderBadge(newStatus);
                     }
-                    if (typeof checkStatus === 'function') await checkStatus();
+                    await verifyStatus(); // FIXED function call
                 } else {
-                    showMessage(data.erro || 'Error updating status.', 'error');
+                    showMessage(data.error || 'Error updating status.', 'error');
                 }
             } catch (error) {
                 showMessage('Connection error with the API.', 'error');
@@ -541,23 +539,23 @@
         }
 
         async function excludeOrder(id) {
-            // User confirmation before deleting
             const confirmed = window.confirm(`Are you sure you want to delete Order #${id}? This action is permanent.`);
-            if (!confirmed) return; // User clicked Cancel
+            if (!confirmed) return;
 
             try {
-                const response = await fetch(`${API_URL}/ordens/${id}`, {
-                    method: 'DELETE' // DELETE doesn't need a body
+                // FIXED the route from /ordens/ to /orders/
+                const response = await fetch(`${API_URL}/orders/${id}`, {
+                    method: 'DELETE'
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    showMessage(`Order #${id} deleted successfully!`, 'sucess');
-                    await loadOrders(); // Updates the table
-                    if (typeof checkStatus === 'function') await checkStatus();
+                    showMessage(`Order #${id} deleted successfully!`, 'success');
+                    await loadOrders();
+                    await verifyStatus(); // FIXED function call
                 } else {
-                    showMessage(data.erro || 'Error deleting order.', 'error');
+                    showMessage(data.error || 'Error deleting order.', 'error');
                 }
             } catch (error) {
                 showMessage('Connection error with the API.', 'error');
@@ -567,18 +565,22 @@
 
         // Displays feedback messages on the screen
         function showMessage(text, type) {
-            const div = document.getElementById('message'); // Change to 'message' if you translated the ID in HTML
+            const div = document.getElementById('message');
 
             div.textContent = text;
-            // Uses your CSS classes: message + sucess or error
             div.className = `message ${type}`;
-            div.classList.remove('ocult'); // Removes the display: none
+            div.classList.remove('ocult');
 
-            // Hides the message automatically after 3 seconds
             setTimeout(() => {
                 div.classList.add('ocult');
             }, 3000);
         }
+
+        // ADDED: Initialize the app when the page loads
+        window.onload = () => {
+            verifyStatus();
+            loadOrders();
+        };
     </script>
 </body>
 
