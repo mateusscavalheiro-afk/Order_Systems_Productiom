@@ -237,7 +237,7 @@
         
         .badge-pending {
             background: #FFF9C4;
-            color: #F57F17;
+            color: #e22e2e;
         }
         
         .badge-inprogress {
@@ -302,7 +302,7 @@
 
                 </div>
                 <div class="form-group">
-                    <label for="new_status">Initial Status</label>
+                    <label for="new-status">Initial Status</label>
                     <select id="initial-status">
                     <option value="Pending">Pending</option>
                     <option value="In progress">In progress</option>
@@ -310,9 +310,7 @@
                 </select>
                 </div>
             </div>
-            <button id="btn-register" onclick="createOrder()">
-                Create Order
-                </button>
+            <button type="button" id="btn-register" onclick="createOrder()">Create Order</button>
             <!-- Feedback Message (success or error) -->
             <div id="message" class="ocult message"></div>
         </section>
@@ -340,7 +338,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="corpse-table">
+                    <tbody id="table-corpse">
                         <!-- Registered lines by JavaScript -->
                     </tbody>
                 </table>
@@ -372,7 +370,7 @@
             const loading = document.getElementById('loading');
             const noData = document.getElementById('no-data');
             const table = document.getElementById('orders-table');
-            const corpse = document.getElementById('table-corpse'); // FIXED ID
+            const corpse = document.getElementById('table-corpse');
 
             // Shows the loading indicator and hide the table
             loading.classList.remove('ocult');
@@ -425,9 +423,9 @@
                     </tr>
                 `).join('');
 
-            } catch (erro) {
+            } catch (error) {
                 loading.classList.add('ocult');
-                console.error('Error in load orders:', erro);
+                console.error('Error in load orders:', error);
                 showMessage('Error to connect with API. The server is playing?', 'error');
             }
         }
@@ -436,7 +434,7 @@
         function renderBadge(status) {
             const classes = {
                 'Pending': 'badge badge-pending',
-                'In progress': 'badge badge-progress',
+                'In progress': 'badge badge-inprogress',
                 'Complete': 'badge badge-complete'
             };
             const cls = classes[status] || 'badge';
@@ -446,8 +444,8 @@
         async function createOrder() {
             // Captures the values from the HTML fields
             const product = document.getElementById('product').value.trim();
-            const quantity = document.getElementById('quantity').value; // FIXED ID
-            const status = document.getElementById('initial-status').value; // FIXED ID
+            const quantity = document.getElementById('quantity').value; 
+            const status = document.getElementById('initial-status').value; 
 
             // Front-end validation (before calling the API)
             if (!product) {
