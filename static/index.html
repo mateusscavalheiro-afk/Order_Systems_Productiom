@@ -441,8 +441,145 @@
             return `<span class="${cls}">${status}</span>`;
         }
 
-        <
-        /body>
+        async function createOrder() {
+            // Captures the values from the HTML fields
+            const product = document.getElementById('product').value.trim();
+            const quantity = document.getElementById('quantitye').value;
+            const status = document.getElementById('new-status').value;
 
-        <
-        /html>
+            // Front-end validation (before calling the API)
+            if (!product) {
+                showMessage('Fill the product name.', 'error');
+                document.getElementById('product').focus();
+                return;
+            }
+            if (!quantity || Number(quantity) <= 0) {
+                showMessage('Inform a valid quantity (positive number).', 'error');
+                document.getElementById('quantity').focus();
+                return;
+            }
+
+            // Disables the button to prevent double-clicking
+            const btn = document.getElementById('btn-register');
+            btn.disabled = true;
+            btn.textContent = 'Registering...';
+
+            try {
+                const response = await fetch(`${API_URL}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product: product,
+                        quantity: Number(quantity),
+                        status: status
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) { // response.ok is true for status 200-299
+                    showMessage(`Order #${data.id} registered successfully!`, 'sucess');
+                    clearForm();
+                    await loadOrders(); // Updates the table
+
+                    // Only call checkStatus if you created the verificarStatus() function
+                    if (typeof checkStatus === 'function') await checkStatus();
+                } else {
+                    // Shows the error message returned by Flask
+                    showMessage(data.error || 'Error trying to register.', 'error');
+                }
+            } catch (error) {
+                showMessage('Connection error with the API.', 'error');
+                console.error(error);
+            } finally {
+                // The finally block ALWAYS executes
+                btn.disabled = false;
+                btn.textContent = 'Register Order';
+            }
+        }
+
+        // Clears the form fields after a successful registration
+        function clearForm() {
+            document.getElementById('product').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('new-status').value = 'Pending';
+        }
+
+        async function updateStatus(id, newStatus) {
+            try {
+                const response = await fetch(`${API_URL}/orders/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status: newStatus
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage(`Status for Order #${id} updated to '${newStatus}'.`, 'success');
+
+                    // Updates just the badge in the row without reloading the page
+                    const row = document.getElementById(`line-${id}`);
+                    if (row) {
+                        const tdStatus = row.cells[3];
+                        tdStatus.innerHTML = renderBadge(newStatus);
+                    }
+                    if (typeof checkStatus === 'function') await checkStatus();
+                } else {
+                    showMessage(data.erro || 'Error updating status.', 'error');
+                }
+            } catch (error) {
+                showMessage('Connection error with the API.', 'error');
+                console.error(error);
+            }
+        }
+
+        async function excludeOrder(id) {
+            // User confirmation before deleting
+            const confirmed = window.confirm(`Are you sure you want to delete Order #${id}? This action is permanent.`);
+            if (!confirmed) return; // User clicked Cancel
+
+            try {
+                const response = await fetch(`${API_URL}/ordens/${id}`, {
+                    method: 'DELETE' // DELETE doesn't need a body
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage(`Order #${id} deleted successfully!`, 'sucess');
+                    await loadOrders(); // Updates the table
+                    if (typeof checkStatus === 'function') await checkStatus();
+                } else {
+                    showMessage(data.erro || 'Error deleting order.', 'error');
+                }
+            } catch (error) {
+                showMessage('Connection error with the API.', 'error');
+                console.error(error);
+            }
+        }
+
+        // Displays feedback messages on the screen
+        function showMessage(text, type) {
+            const div = document.getElementById('message'); // Change to 'message' if you translated the ID in HTML
+
+            div.textContent = text;
+            // Uses your CSS classes: message + sucess or error
+            div.className = `message ${type}`;
+            div.classList.remove('ocult'); // Removes the display: none
+
+            // Hides the message automatically after 3 seconds
+            setTimeout(() => {
+                div.classList.add('ocult');
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
