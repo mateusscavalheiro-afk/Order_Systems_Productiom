@@ -6,7 +6,273 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Production Order Systems</title>
-    <!-- The CSS style will be here in Section 4 -->
+    <style>
+        /* ── Reset and base ─────────────────────────────────── */
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f4f8;
+            color: #263238;
+            min-height: 100vh;
+        }
+        /* ── HEADER ─────────────────────────────────────── */
+        
+        header {
+            background: linear-gradient(135deg, #1F3864, #00897B);
+            color: white;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        /* ── API status badge ─────────────────────────── */
+        
+        #status-badge {
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        #status-badge.online {
+            background: #00897B;
+            border-color: #00897B;
+        }
+        
+        #status-badge.offline {
+            background: #B71C1C;
+            border-color: #B71C1C;
+        }
+        /* ── Main Layout ──────────────────────────────── */
+        
+        main {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        /* ── Cards ──────────────────────────────────────────── */
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .card h2 {
+            font-size: 1.1rem;
+            color: #00897B;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #E0F2F1;
+        }
+        /* ── Formulary ─────────────────────────────────────── */
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #546E7A;
+        }
+        
+        input,
+        select {
+            padding: 0.55rem 0.8rem;
+            border: 1.5px solid #CFD8DC;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        
+        input:focus,
+        select:focus {
+            border-color: #00897B;
+        }
+        /* ── Buttons ─────────────────────────────────────────── */
+        
+        button {
+            padding: 0.6rem 1.4rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+        
+        button:hover {
+            opacity: 0.88;
+        }
+        
+        button:active {
+            transform: scale(0.97);
+        }
+        
+        #btn-register {
+            background: #00897B;
+            color: white;
+        }
+        
+        .btn-update {
+            background: #E0F2F1;
+            color: #00897B;
+            font-size: 0.85rem;
+        }
+        
+        .btn-exclude {
+            background: #FFEBEE;
+            color: #C62828;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+        }
+        /* ── Feedback Message ───────────────────────────── */
+        
+        .message {
+            margin-top: 0.8rem;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .sucess.message {
+            background: #E8F5E9;
+            color: #2E7D32;
+            border-left: 4px solid #2E7D32;
+        }
+        
+        .error.message {
+            background: #FFEBEE;
+            color: #C62828;
+            border-left: 4px solid #C62828;
+        }
+        
+        .ocult {
+            display: none;
+        }
+        /* ── Table ─────────────────────────────────────────── */
+        
+        .listagem-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        th {
+            background: #263238;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ECEFF1;
+        }
+        
+        tr:hover td {
+            background: #F5F5F5;
+        }
+        /* ── Status badge ───────────────────────────────── */
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        
+        .badge-pending {
+            background: #FFF9C4;
+            color: #F57F17;
+        }
+        
+        .badge-inprogress {
+            background: #E3F2FD;
+            color: #0D47A1;
+        }
+        
+        .badge-complete {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        /* ── Select table status ────────────────────── */
+        
+        .select-status {
+            padding: 3px 6px;
+            border: 1px solid #CFD8DC;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+        /* ── Loading ────────────────────────────────────────── */
+        
+        #loading {
+            text-align: center;
+            padding: 1rem;
+            color: #00897B;
+            font-weight: 600;
+        }
+        
+        #no-data {
+            text-align: center;
+            padding: 2rem;
+            color: #90A4AE;
+        }
+    </style>
 </head>
 
 <body>
@@ -48,7 +314,7 @@
                 Create Order
                 </button>
             <!-- Feedback Message (success or error) -->
-            <div id="message" class="hide message"></div>
+            <div id="message" class="ocult message"></div>
         </section>
 
         <!-- SECTION: LIST TABLE -->
@@ -60,7 +326,7 @@
               </button>
             </div>
             <!-- Load Indicator -->
-            <div id="loading" class="hide">Loading...</div>
+            <div id="loading" class="ocult">Loading...</div>
             <!-- Table dynamically populated by JavaScript -->
             <div class="tabela-container">
                 <table id="orders-table">
@@ -83,7 +349,100 @@
         </section>
     </main>
 
-    <!-- JavaScript goes here in section 5 -->
-</body>
+    <script>
+        // URL base da API Flask
+        // Em produção, trocamos por: 'https://meuservidor.com.br'
+        const API_URL = 'http://localhost:5000';
+        // ────────────────────────────────────────────────────────
+        async function verificarStatus() {
+            const badge = document.getElementById('status-badge');
+            try {
+                const resp = await fetch(`${API_URL}/status`);
+                const dados = await resp.json();
+                badge.textContent = `API Online | ${dados.total_ordens} ordens`;
+                badge.className = 'online';
+            } catch (erro) {
+                badge.textContent = 'API Offline';
+                badge.className = 'offline';
+            }
+        }
 
-</html>
+        async function loadOrders() {
+            const loading = document.getElementById('loading');
+            const noData = document.getElementById('no-data');
+            const table = document.getElementById('orders-table');
+            const corpse = document.getElementById('corpse-table');
+            // Shows the loading indicator and hide the table
+            loading.classList.remove('ocult');
+            table.classList.add('ocult');
+            noData.classList.add('ocult');
+
+            try {
+                // Query GET /orders
+                const awnser = await fetch(`${API_URL}/orders`);
+                // Convert the awnser (text JSON) in array JavaScript
+                const orders = await awnser.json();
+                // Hide loading
+                loading.classList.add('ocult');
+                // If don't have orders, show message and exit function
+                if (orders.length === 0) {
+                    noData.classList.remove('ocult');
+                    return;
+                }
+
+                // For every order, create one line <tr> in table
+                corpse.innerHTML = orders.map(order => `
+                    <tr id="line-${order.id}">
+                        <td>${order.id}</td>
+                        <td>${order.product}</td>
+                        <td>${order.quantity}</td>
+                        <td>${renderizarBadge(order.status)}</td>
+                        <td>${order.created_at}</td>
+                        <td>
+                            <select class="select-status"
+                                onchange="updateStatus(${order.id}, this.value)">
+                                <option value="Pending"
+                                    ${order.status === 'Pending' ? 'selected' : ''}>
+                                    Pending
+                                </option>
+                                <option value="In progress"
+                                   ${order.status === 'In progress' ? 'selected' : ''}>
+                                   In progress
+                                </option>
+                                <option value="Complete"
+                                    ${order.status === 'Complete' ? 'selected' : ''}>
+                                    Complete
+                                </option>
+                            </select>
+                            <button class="btn-exclude"
+                                onclick="excludeOrder(${order.id})">
+                              Exclude
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // Shows the complete table
+            } catch (erro) {
+                loading.classList.add('ocult');
+                console.error('Error in load orders:', erro);
+                showMessage('Error to connect with API. The server is playing?', 'error');
+            }
+        }
+
+        // Returns badge HTML coloured by the status
+        function renderBadge(status) {
+            const classes = {
+                'Pending': 'badge badge-pending',
+                'In progress': 'badge badge-progress',
+                'Complete': 'badge badge-complete'
+            };
+            const cls = classes[status] || 'badge';
+            return `<span class="${cls}">${status}</span>`;
+        }
+
+        <
+        /body>
+
+        <
+        /html>
