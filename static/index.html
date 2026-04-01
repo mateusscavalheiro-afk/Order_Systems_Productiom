@@ -1,1 +1,89 @@
 <!-- Interface (HTML + CSS + JS) -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Order Systems</title>
+    <!-- The CSS style will be here in Section 4 -->
+</head>
+
+<body>
+
+    <!-- HEADER ──────────────────────────────────────── -->
+    <header>
+        <div class="header-content">
+            <h1>Production Order Systems</h1>
+            <span id="status-badge">Verifying...</span>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT ──────────────────────────────── -->
+    <main>
+        <!-- SECTION: Register Form -->
+        <section class="card" id="register-section">
+            <h2>New Production Order</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="product">Product</label>
+                    <input type="text" id="product" placeholder="Ex: Motor Eletrico WEG W22">
+
+                </div>
+                <div class="form-group">
+                    <label for="quantidade">Quantity</label>
+                    <input type="number" id="quantity" placeholder="Ex: 100" min="1">
+
+                </div>
+                <div class="form-group">
+                    <label for="new_status">Initial Status</label>
+                    <select id="initial-status">
+                    <option value="Pending">Pending</option>
+                    <option value="In progress">In progress</option>
+                    <option value="Complete">Complete</option>
+                </select>
+                </div>
+            </div>
+            <button id="btn-register" onclick="createOrder()">
+                Create Order
+                </button>
+            <!-- Feedback Message (success or error) -->
+            <div id="message" class="hide message"></div>
+        </section>
+
+        <!-- SECTION: LIST TABLE -->
+        <section class="card" id="list-section">
+            <div class="list-header">
+                <h2>Registered Orders</h2>
+                <button onclick="loadOrders()" class="btn-update">
+                Update List
+              </button>
+            </div>
+            <!-- Load Indicator -->
+            <div id="loading" class="hide">Loading...</div>
+            <!-- Table dynamically populated by JavaScript -->
+            <div class="tabela-container">
+                <table id="orders-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product</th>
+                            <th>Qtd</th>
+                            <th>Status</th>
+                            <th>Created at</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-corpse">
+                        <!-- Registered lines by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <p id="no-data" class="ocult">None registered order.</p>
+        </section>
+    </main>
+
+    <!-- JavaScript goes here in section 5 -->
+</body>
+
+</html>
