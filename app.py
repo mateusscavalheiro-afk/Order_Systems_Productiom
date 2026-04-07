@@ -2,6 +2,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from database import init_db, get_connection
+import datetime 
 
 # Create an Flash's application instance
 app = Flask(__name__, static_folder='static', static_url_path='')
@@ -23,11 +24,18 @@ def status():
     API's VERIFICATION ROUTE (HEALTH)
     Returns JSON informing  server's active state
     '''
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT COUNT(*) as total FROM orders')
+    result = cursor.fetchone()
 
     return jsonify({
         "status": "online",
         "system": "Order System's Production",
         "version": "1.0.0",
+        "total_orders": result["total"],
+        "timestamp": datetime.datetime.now().strftime("%Y-%m-%d / %H:%M:%S"),
         "message": "Hello Factory, API working!"
     })
 
