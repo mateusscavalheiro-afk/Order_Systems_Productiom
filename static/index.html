@@ -349,7 +349,9 @@
     <script>
         // URL API base Flask
         const API_URL = 'http://localhost:5000';
+        
         // API SAFE KEY
+        // You must put your actual key here as a string (between quotes).
         const API_KEY = 'senai-cibersistems-2026-safe-key'; 
 
         // ────────────────────────────────────────────────────────
@@ -391,21 +393,15 @@
                 const awnser = await fetch(`${API_URL}/orders`, {
                     method: 'GET',
                     headers: {
-                        'X-API-Key': API_KEY // Enviando a chave aqui também!
+                        'X-API-Key': API_KEY // Safe sending key method
                     }
                 });
         
                 if (!awnser.ok) {
-                    throw new Error('Não autorizado ou erro na API');
+                    throw new Error('Unauthorized or error in API');
                 }
 
                 const orders = await awnser.json();
-                loading.classList.add('ocult');
-
-            try {
-                const awnser = await fetch(`${API_URL}/orders`);
-                const orders = await awnser.json();
-
                 loading.classList.add('ocult');
 
                 // If don't have orders, show message and exit function
@@ -493,7 +489,8 @@
                 const response = await fetch(`${API_URL}/orders`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-API-Key': API_KEY // Safe sending key method
                     },
                     body: JSON.stringify({
                         product: product,
@@ -533,7 +530,8 @@
                 const response = await fetch(`${API_URL}/orders/${id}`, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-API-Key': API_KEY // Safe sending key method
                     },
                     body: JSON.stringify({
                         status: newStatus
@@ -543,7 +541,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showMessage(`Status for Order #${id} updated to '${newStatus}'.`, 'sucess'); // Fixed 'sucess' to match CSS
+                    showMessage(`Status for Order #${id} updated to '${newStatus}'.`, 'sucess');
 
                     // Updates just the badge in the row without reloading the page
                     const row = document.getElementById(`line-${id}`);
@@ -568,13 +566,16 @@
             try {
                 // FIXED the route from /ordens/ to /orders/
                 const response = await fetch(`${API_URL}/orders/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: {
+                        'X-API-Key': API_KEY // Safe sending key method
+                    }
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    showMessage(`Order #${id} deleted successfully!`, 'success');
+                    showMessage(`Order #${id} deleted successfully!`, 'sucess'); 
                     await loadOrders();
                     await verifyStatus(); // FIXED function call
                 } else {
