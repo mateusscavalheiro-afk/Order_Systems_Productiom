@@ -3,12 +3,55 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from database import init_db, get_connection
 import datetime 
+import os
+from dotenv import load_dotenv as ldv
+from functools import wraps
 
 # Create an Flash's application instance
 app = Flask(__name__, static_folder='static', static_url_path='')
 
-# Habilitate CORS
+# Enable CORS
 CORS(app)
+
+# ── Safe Config. ────────────────────────────
+# In production: use enviroment variable (os.environ.get('API_KEY'))
+# Import .env safe key
+ldv()
+
+API_KEY = os.environ.get('API_KEY')
+
+def aut_need(f):
+    """
+    Formatter protects routes, requiring a valid API key.
+    
+    Client must send header:
+        X-API-Key: <API_KEY value set>
+        
+    If key is incorret or apsent, returns 401 Unauthorized.
+    If correct, execute normally route.
+    
+    Uses:
+        @app.route('/route')
+        @aut_need
+        def my_route():
+        ...
+    """
+    
+    @wraps(f) # Preserve name and docstring from original function
+
+    def formatter(*args, **kwargs):
+        # Read X-API-Key require
+        rcv_key = request.headers.get('X-API-Key')
+        if not rcv_key:
+            return jsonify({
+            'error': 'Authenticate needed.',
+            'instruction': 'Send X-API-Key header with your safe key.'}), 401
+        if rcv_key != API_KEY:
+            return jsonify({
+            'error': 'Chave de API invalida ou expirada.'}), 403
+        # Correct key: execute route
+        return f(*args, **kwargs)
+    return formatter
 
 # Route Nº1 - Initial screen
 @app.route('/')
@@ -19,6 +62,7 @@ def index():
 
 # Route Nº2 - API STATUS
 @app.route('/status')
+@aut_need
 def status():
     '''
     API's VERIFICATION ROUTE (HEALTH)
@@ -41,6 +85,7 @@ def status():
 
 # Route Nº3 - List all orders (GET)
 @app.route('/orders', methods=['GET'])
+@aut_need
 def list_orders():
     '''
     LIST ALL REGISTERED PRODUCTION ORDERS (Supports filtering by status)
@@ -68,6 +113,7 @@ def list_orders():
 
 # Route Nº4 - Get a specific order by ID (GET)
 @app.route('/orders/<int:order_id>', methods=['GET'])
+@aut_need
 def search_order(order_id):
     """
     Search a unique production order.
@@ -93,6 +139,7 @@ def search_order(order_id):
 
 # Route Nº5 - Create a new order (POST)
 @app.route('/orders', methods=['POST'])
+@aut_need
 def create_order():
     """
     Create a new production order from sended JSON data 
@@ -160,6 +207,7 @@ def create_order():
 
 # Route Nº6 - Order status update (PUT)
 @app.route('/orders/<int:order_id>', methods=['PUT'])
+@aut_need
 def update_order(order_id):
     """
     Update an existent production order
@@ -208,6 +256,7 @@ def update_order(order_id):
 
 # Route Nº7 - Remove an order (DELETE) 
 @app.route('/orders/<int:order_id>', methods=['DELETE'])
+@aut_need
 def remove_order(order_id):
     """
     Remove permanently an order searched by ID
@@ -239,7 +288,5 @@ def remove_order(order_id):
     
 # STARTING POINT
 if __name__== '__main__':
-    
-    app.run(debug=True, host='0.0.0.0', port=5000)
-    
     init_db()
+    app.run(debug=True, host='0.0.0.0', port=5000)
