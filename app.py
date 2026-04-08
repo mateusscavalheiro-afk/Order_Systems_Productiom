@@ -254,6 +254,53 @@ def update_order(order_id):
     conn.close()
     return jsonify(dict(updated_order)), 200
 
+# Route Nº7 - Edit order (PUT)
+@app.route('/orders/<int:order_id>/edit', methods=['PUT'])
+@aut_need
+def edit_order(order_id):
+    """
+    Edit an existent production order
+    """
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Missing or invalid request body.'}), 400
+    
+    # Verify product name and quantity field
+    new_product = data.get('product', '').strip()
+    if not new_product:
+        return jsonify({'error': 'Field "product" is obligatory.'}), 400
+    
+    new_quantity = data.get('quantity')
+    if new_quantity is None:
+        return jsonify({'error': 'Field "quantity" its obligatory and cannot be empty.'}), 400
+    
+    # Verify if quantity is a positive number
+    try:
+        quantity = int(new_quantity)
+        if quantity <= 0:
+            raise ValueError()
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Field "quantity" must be a positive number.'}), 400
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    # Verify existent order before try visualize it 
+    cursor.execute('SELECT id FROM orders WHERE id = ?', (order_id,))
+    if cursor.fetchone() is None:
+        conn.close()
+        return jsonify({'error': f'Order {order_id} not found.'}), 404
+    
+    # ── Database update ──
+    cursor.execute(
+        'UPDATE orders SET product = ?, quantity = ? WHERE id = ?', 
+        (new_product, quantity, order_id)
+    )
+    conn.commit()
+    conn.close()
+    
+    return jsonify({'message': f'Order {order_id} updated successfully.'}), 200
+    
 # Route Nº7 - Remove an order (DELETE) 
 @app.route('/orders/<int:order_id>', methods=['DELETE'])
 @aut_need

@@ -1,4 +1,3 @@
-<!-- Interface (HTML + CSS + JS) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +6,6 @@
     <title>Production Order Systems</title>
     <style>
         /* ── Reset and base ─────────────────────────────────── */
-        
         * {
             box-sizing: border-box;
             margin: 0;
@@ -20,8 +18,8 @@
             color: #263238;
             min-height: 100vh;
         }
-        /* ── HEADER ─────────────────────────────────────── */
         
+        /* ── HEADER ─────────────────────────────────────── */
         header {
             background: linear-gradient(135deg, #1F3864, #00897B);
             color: white;
@@ -41,8 +39,8 @@
             font-size: 1.4rem;
             font-weight: 700;
         }
-        /* ── API status badge ─────────────────────────── */
         
+        /* ── API status badge ─────────────────────────── */
         #status-badge {
             font-size: 0.8rem;
             padding: 4px 12px;
@@ -60,8 +58,8 @@
             background: #B71C1C;
             border-color: #B71C1C;
         }
-        /* ── Main Layout ──────────────────────────────── */
         
+        /* ── Main Layout ──────────────────────────────── */
         main {
             max-width: 1100px;
             margin: 2rem auto;
@@ -70,8 +68,8 @@
             flex-direction: column;
             gap: 1.5rem;
         }
-        /* ── Cards ──────────────────────────────────────────── */
         
+        /* ── Cards ──────────────────────────────────────────── */
         .card {
             background: white;
             border-radius: 10px;
@@ -86,8 +84,8 @@
             padding-bottom: 0.5rem;
             border-bottom: 2px solid #E0F2F1;
         }
-        /* ── Formulary ─────────────────────────────────────── */
         
+        /* ── Formulary ─────────────────────────────────────── */
         .form-grid {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
@@ -113,22 +111,21 @@
             color: #546E7A;
         }
         
-        input,
-        select {
+        input, select {
             padding: 0.55rem 0.8rem;
-            border: 1.5px solid #CFD8DC;
+            border: 1px solid #CFD8DC;
             border-radius: 6px;
             font-size: 0.95rem;
             transition: border-color 0.2s;
             outline: none;
+            width: 100%;
         }
         
-        input:focus,
-        select:focus {
+        input:focus, select:focus {
             border-color: #00897B;
         }
-        /* ── Buttons ─────────────────────────────────────────── */
         
+        /* ── Buttons ─────────────────────────────────────────── */
         button {
             padding: 0.6rem 1.4rem;
             border: none;
@@ -155,7 +152,6 @@
         .btn-update {
             background: #E0F2F1;
             color: #00897B;
-            font-size: 0.85rem;
         }
         
         .btn-exclude {
@@ -164,8 +160,8 @@
             font-size: 0.8rem;
             padding: 4px 10px;
         }
-        /* ── Feedback Message ───────────────────────────── */
         
+        /* ── Feedback Message ───────────────────────────── */
         .message {
             margin-top: 0.8rem;
             padding: 0.6rem 1rem;
@@ -174,7 +170,7 @@
             font-weight: 500;
         }
         
-        .sucess.message {
+        .success.message {
             background: #E8F5E9;
             color: #2E7D32;
             border-left: 4px solid #2E7D32;
@@ -189,16 +185,16 @@
         .ocult {
             display: none;
         }
-        /* ── Table ─────────────────────────────────────────── */
         
-        .listagem-header {
+        /* ── Table ─────────────────────────────────────────── */
+        .list-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
         }
         
-        .table-container {
+        .tabela-container {
             overflow-x: auto;
         }
         
@@ -224,8 +220,8 @@
         tr:hover td {
             background: #F5F5F5;
         }
-        /* ── Status badge ───────────────────────────────── */
         
+        /* ── Status badge ───────────────────────────────── */
         .badge {
             display: inline-block;
             padding: 3px 10px;
@@ -236,7 +232,7 @@
         
         .badge-pending {
             background: #FFF9C4;
-            color: #e22e2e;
+            color: #D32F2F;
         }
         
         .badge-inprogress {
@@ -248,17 +244,18 @@
             background: #E8F5E9;
             color: #2E7D32;
         }
-        /* ── Select table status ────────────────────── */
         
+        /* ── Select table status ────────────────────── */
         .select-status {
             padding: 3px 6px;
             border: 1px solid #CFD8DC;
             border-radius: 4px;
             font-size: 0.82rem;
             cursor: pointer;
+            width: auto;
         }
-        /* ── Loading ────────────────────────────────────────── */
         
+        /* ── Loading ────────────────────────────────────────── */
         #loading {
             text-align: center;
             padding: 1rem;
@@ -276,7 +273,6 @@
 
 <body>
 
-    <!-- HEADER ──────────────────────────────────────── -->
     <header>
         <div class="header-content">
             <h1>Production Order Systems</h1>
@@ -284,47 +280,59 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT ──────────────────────────────── -->
     <main>
-        <!-- SECTION: Register Form -->
         <section class="card" id="register-section">
             <h2>New Production Order</h2>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="product">Product</label>
                     <input type="text" id="product" placeholder="Ex: Motor Eletrico WEG W22">
-
                 </div>
                 <div class="form-group">
-                    <label for="quantidade">Quantity</label>
+                    <label for="quantity">Quantity</label>
                     <input type="number" id="quantity" placeholder="Ex: 100" min="1">
-
                 </div>
                 <div class="form-group">
-                    <label for="new-status">Initial Status</label>
+                    <label for="initial-status">Initial Status</label>
                     <select id="initial-status">
-                    <option value="Pending">Pending</option>
-                    <option value="In progress">In progress</option>
-                    <option value="Complete">Complete</option>
-                </select>
+                        <option value="Pending">Pending</option>
+                        <option value="In progress">In progress</option>
+                        <option value="Complete">Complete</option>
+                    </select>
                 </div>
             </div>
             <button type="button" id="btn-register" onclick="createOrder()">Create Order</button>
-            <!-- Feedback Message (success or error) -->
-            <div id="message" class="ocult message"></div>
+             <div id="msg-register" class="ocult message"></div>
         </section>
 
-        <!-- SECTION: LIST TABLE -->
+        <section class="card" id="edit-section">
+            <h2>Edit Asset from Order</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="edit-id">ID</label>
+                    <select id="edit-id" onchange="fillEditForm()">
+                        <option value="">Select an ID</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-product">Product</label>
+                    <input type="text" id="edit-product" placeholder="Ex: Motor Eletrico WEG W22">
+                </div>
+                <div class="form-group">
+                    <label for="edit-quantity">Quantity</label>
+                    <input type="number" id="edit-quantity" placeholder="Ex: 100" min="1">
+                </div>
+            </div>
+            <button onclick="submitEditOrder()" class="btn-update"> Edit Asset </button>
+            <div id="msg-edit" class="ocult message"></div>
+        </section>
+
         <section class="card" id="list-section">
             <div class="list-header">
                 <h2>Registered Orders</h2>
-                <button onclick="loadOrders()" class="btn-update">
-                Update List
-              </button>
             </div>
-            <!-- Load Indicator -->
             <div id="loading" class="ocult">Loading...</div>
-            <!-- Table dynamically populated by JavaScript -->
+            
             <div class="tabela-container">
                 <table id="orders-table">
                     <thead>
@@ -338,8 +346,7 @@
                         </tr>
                     </thead>
                     <tbody id="table-corpse">
-                        <!-- Registered lines by JavaScript -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
             <p id="no-data" class="ocult">None registered order.</p>
@@ -347,34 +354,29 @@
     </main>
 
     <script>
-        // URL API base Flask
         const API_URL = 'http://localhost:5000';
         
-        // API SAFE KEY
-        // We encoded the key in Base64 and chopped it into 4 random pieces.
-        // atob() is a native JavaScript function that decodes Base64 back to normal text.
-        const _0x1a = atob('c2VuYWkt');             
+        const _0x1a = atob('c2VuYWkt');            
         const _0x2b = atob('Y2liZXJzaXN0ZW1zLQ=='); 
-        const _0x3c = atob('MjAyNi0=');             
+        const _0x3c = atob('MjAyNi0=');            
         const _0x4d = atob('c2FmZS1rZXk=');        
 
-        // We create a function that glues the pieces together only at the exact moment of the request
         function getSafeKey() {
             return _0x1a + _0x2b + _0x3c + _0x4d;
         }
 
-        // ────────────────────────────────────────────────────────
+        // Armazena os dados atuais para preenchimento rápido do formulário de edição
+        let currentOrders = [];
+
         async function verifyStatus() {
             const badge = document.getElementById('status-badge');
             try {
                 const resp = await fetch(`${API_URL}/status`, {
                     method: 'GET',
-                    headers: {
-                        'X-API-Key': getSafeKey()
-                    }
+                    headers: { 'X-API-Key': getSafeKey() }
                 });
                 
-                if (resp.ok) { // Verify API accepted the key (Status 200)
+                if (resp.ok) {
                     badge.textContent = `API Online`;
                     badge.className = 'online';
                 } else {
@@ -392,75 +394,120 @@
             const noData = document.getElementById('no-data');
             const table = document.getElementById('orders-table');
             const corpse = document.getElementById('table-corpse');
+            const editIdSelect = document.getElementById('edit-id');
 
-            // Shows the loading indicator and hide the table
             loading.classList.remove('ocult');
             table.classList.add('ocult');
             noData.classList.add('ocult');
 
             try {
-                const awnser = await fetch(`${API_URL}/orders`, {
+                const answer = await fetch(`${API_URL}/orders`, {
                     method: 'GET',
-                    headers: {
-                        'X-API-Key': getSafeKey()
-                    }
+                    headers: { 'X-API-Key': getSafeKey() }
                 });
         
-                if (!awnser.ok) {
-                    throw new Error('Unauthorized or error in API');
-                }
+                if (!answer.ok) throw new Error('Unauthorized or error in API');
 
-                const orders = await awnser.json();
+                const orders = await answer.json();
+                currentOrders = orders; // Atualiza variável global
                 loading.classList.add('ocult');
 
-                // If don't have orders, show message and exit function
                 if (orders.length === 0) {
                     noData.classList.remove('ocult');
+                    editIdSelect.innerHTML = '<option value="">Select an ID</option>';
                     return;
                 }
 
-                // Show table if there is data
                 table.classList.remove('ocult');
 
-                // For every order, create one line <tr> in table
+                // Atualiza a tabela
                 corpse.innerHTML = orders.map(order => `
                     <tr id="line-${order.id}">
                         <td>${order.id}</td>
                         <td>${order.product}</td>
                         <td>${order.quantity}</td>
-                        <td>${renderBadge(order.status)}</td> <td>${order.created_at || ''}</td>
+                        <td>${renderBadge(order.status)}</td> 
+                        <td>${order.created_at || ''}</td>
                         <td>
-                            <select class="select-status"
-                                onchange="updateStatus(${order.id}, this.value)">
-                                <option value="Pending"
-                                    ${order.status === 'Pending' ? 'selected' : ''}>
-                                    Pending
-                                </option>
-                                <option value="In progress"
-                                   ${order.status === 'In progress' ? 'selected' : ''}>
-                                   In progress
-                                </option>
-                                <option value="Complete"
-                                    ${order.status === 'Complete' ? 'selected' : ''}>
-                                    Complete
-                                </option>
+                            <select class="select-status" onchange="updateStatus(${order.id}, this.value)">
+                                <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="In progress" ${order.status === 'In progress' ? 'selected' : ''}>In progress</option>
+                                <option value="Complete" ${order.status === 'Complete' ? 'selected' : ''}>Complete</option>
                             </select>
-                            <button class="btn-exclude"
-                                onclick="excludeOrder(${order.id})">
-                              Exclude
-                            </button>
+                            <button class="btn-exclude" onclick="excludeOrder(${order.id})">Exclude</button>
                         </td>
                     </tr>
                 `).join('');
 
+                // Atualiza o Select de ID para o formulário de Edição
+                editIdSelect.innerHTML = '<option value="">Select an ID</option>' + 
+                    orders.map(order => `<option value="${order.id}">ID: ${order.id}</option>`).join('');
+
             } catch (error) {
                 loading.classList.add('ocult');
-                console.error('Error in load orders:', error);
-                showMessage('Error to connect with API. The server is playing?', 'error');
+                console.error(error);
+                showMessage('msg-register', 'Error to connect with API. Server offline?', 'error');
             }
         }
 
-        // Returns badge HTML coloured by the status
+        // Função para preencher automaticamente produto e quantidade ao selecionar o ID no form Edit
+        function fillEditForm() {
+            const selectedId = document.getElementById('edit-id').value;
+            const productInput = document.getElementById('edit-product');
+            const quantityInput = document.getElementById('edit-quantity');
+
+            if (!selectedId) {
+                productInput.value = '';
+                quantityInput.value = '';
+                return;
+            }
+
+            const order = currentOrders.find(o => o.id == selectedId);
+            if (order) {
+                productInput.value = order.product;
+                quantityInput.value = order.quantity;
+            }
+        }
+
+        // Dispara a edição via formulário
+        async function submitEditOrder() {
+            const id = document.getElementById('edit-id').value;
+            const product = document.getElementById('edit-product').value.trim();
+            const quantity = document.getElementById('edit-quantity').value;
+
+            if (!id) return showMessage('msg-edit', 'Select an ID to edit.', 'error');
+            if (!product) return showMessage('msg-edit', 'Fill the product name.', 'error');
+            if (!quantity || Number(quantity) <= 0) return showMessage('msg-edit', 'Inform a valid quantity.', 'error');
+
+            try {
+                const response = await fetch(`${API_URL}/orders/${id}/edit`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': getSafeKey()
+                    },
+                    body: JSON.stringify({
+                        product: product,
+                        quantity: Number(quantity)
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage('msg-edit', `Asset #${id} updated successfully!`, 'success');
+                    document.getElementById('edit-id').value = '';
+                    document.getElementById('edit-product').value = '';
+                    document.getElementById('edit-quantity').value = '';
+                    await loadOrders(); 
+                } else {
+                    showMessage('msg-edit', data.error || 'Error trying to update.', 'error');
+                }
+            } catch (error) {
+                showMessage('msg-edit', 'Connection error with the API.', 'error');
+            }
+        }
+
         function renderBadge(status) {
             const classes = {
                 'Pending': 'badge badge-pending',
@@ -472,24 +519,21 @@
         }
 
         async function createOrder() {
-            // Captures the values from the HTML fields
             const product = document.getElementById('product').value.trim();
             const quantity = document.getElementById('quantity').value; 
             const status = document.getElementById('initial-status').value; 
 
-            // Front-end validation (before calling the API)
             if (!product) {
-                showMessage('Fill the product name.', 'error');
+                showMessage('msg-register', 'Fill the product name.', 'error');
                 document.getElementById('product').focus();
                 return;
             }
             if (!quantity || Number(quantity) <= 0) {
-                showMessage('Inform a valid quantity (positive number).', 'error');
+                showMessage('msg-register', 'Inform a valid quantity (positive number).', 'error');
                 document.getElementById('quantity').focus();
                 return;
             }
 
-            // Disables the button to prevent double-clicking
             const btn = document.getElementById('btn-register');
             btn.disabled = true;
             btn.textContent = 'Registering...';
@@ -511,27 +555,20 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showMessage(`Order #${data.id} registered successfully!`, 'sucess');
-                    clearForm();
+                    showMessage('msg-register', `Order #${data.id} registered successfully!`, 'success');
+                    document.getElementById('product').value = '';
+                    document.getElementById('quantity').value = '';
+                    document.getElementById('initial-status').value = 'Pending';
                     await loadOrders();
-                    await verifyStatus(); // FIXED function call
                 } else {
-                    showMessage(data.error || 'Error trying to register.', 'error');
+                    showMessage('msg-register', data.error || 'Error trying to register.', 'error');
                 }
             } catch (error) {
-                showMessage('Connection error with the API.', 'error');
-                console.error(error);
+                showMessage('msg-register', 'Connection error with the API.', 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Create Order';
             }
-        }
-
-        // Clears the form fields after a successful registration
-        function clearForm() {
-            document.getElementById('product').value = '';
-            document.getElementById('quantity').value = '';
-            document.getElementById('initial-status').value = 'Pending'; 
         }
 
         async function updateStatus(id, newStatus) {
@@ -542,64 +579,56 @@
                         'Content-Type': 'application/json',
                         'X-API-Key': getSafeKey()
                     },
-                    body: JSON.stringify({
-                        status: newStatus
-                    })
+                    body: JSON.stringify({ status: newStatus })
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    showMessage(`Status for Order #${id} updated to '${newStatus}'.`, 'sucess');
-
-                    // Updates just the badge in the row without reloading the page
+                    showMessage('msg-register', `Status for Order #${id} updated to '${newStatus}'.`, 'success');
                     const row = document.getElementById(`line-${id}`);
                     if (row) {
                         const tdStatus = row.cells[3];
                         tdStatus.innerHTML = renderBadge(newStatus);
                     }
-                    await verifyStatus(); // FIXED function call
+                    // Atualiza o cache local
+                    const orderIndex = currentOrders.findIndex(o => o.id == id);
+                    if(orderIndex !== -1) currentOrders[orderIndex].status = newStatus;
+
                 } else {
-                    showMessage(data.error || 'Error updating status.', 'error');
+                    showMessage('msg-register', data.error || 'Error updating status.', 'error');
                 }
             } catch (error) {
-                showMessage('Connection error with the API.', 'error');
-                console.error(error);
+                showMessage('msg-register', 'Connection error with the API.', 'error');
             }
         }
 
         async function excludeOrder(id) {
-            const confirmed = window.confirm(`Are you sure you want to delete Order #${id}? This action is permanent.`);
+            const confirmed = window.confirm(`Are you sure you want to delete Order #${id}?`);
             if (!confirmed) return;
 
             try {
-                // FIXED the route from /ordens/ to /orders/
                 const response = await fetch(`${API_URL}/orders/${id}`, {
                     method: 'DELETE',
-                    headers: {
-                        'X-API-Key': getSafeKey()
-                    }
+                    headers: { 'X-API-Key': getSafeKey() }
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    showMessage(`Order #${id} deleted successfully!`, 'sucess'); 
+                    showMessage('msg-register', `Order #${id} deleted successfully!`, 'success'); 
                     await loadOrders();
-                    await verifyStatus(); // FIXED function call
                 } else {
-                    showMessage(data.error || 'Error deleting order.', 'error');
+                    showMessage('msg-register', data.error || 'Error deleting order.', 'error');
                 }
             } catch (error) {
-                showMessage('Connection error with the API.', 'error');
-                console.error(error);
+                showMessage('msg-register', 'Connection error with the API.', 'error');
             }
         }
 
-        // Displays feedback messages on the screen
-        function showMessage(text, type) {
-            const div = document.getElementById('message');
-
+        // Alterado para receber o ID do contêiner da mensagem, evitando conflitos na tela
+        function showMessage(elementId, text, type) {
+            const div = document.getElementById(elementId);
             div.textContent = text;
             div.className = `message ${type}`;
             div.classList.remove('ocult');
@@ -609,12 +638,10 @@
             }, 3000);
         }
 
-        // ADDED: Initialize the app when the page loads
         window.onload = () => {
             verifyStatus();
             loadOrders();
         };
     </script>
 </body>
-
 </html>
