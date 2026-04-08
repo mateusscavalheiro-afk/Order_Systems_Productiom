@@ -351,8 +351,17 @@
         const API_URL = 'http://localhost:5000';
         
         // API SAFE KEY
-        // You must put your actual key here as a string (between quotes).
-        const API_KEY = 'senai-cibersistems-2026-safe-key'; 
+        // We encoded the key in Base64 and chopped it into 4 random pieces.
+        // atob() is a native JavaScript function that decodes Base64 back to normal text.
+        const _0x1a = atob('c2VuYWkt');             
+        const _0x2b = atob('Y2liZXJzaXN0ZW1zLQ=='); 
+        const _0x3c = atob('MjAyNi0=');             
+        const _0x4d = atob('c2FmZS1rZXk=');        
+
+        // We create a function that glues the pieces together only at the exact moment of the request
+        function getSafeKey() {
+            return _0x1a + _0x2b + _0x3c + _0x4d;
+        }
 
         // ────────────────────────────────────────────────────────
         async function verifyStatus() {
@@ -361,7 +370,7 @@
                 const resp = await fetch(`${API_URL}/status`, {
                     method: 'GET',
                     headers: {
-                        'X-API-Key': API_KEY // Safe sending key method
+                        'X-API-Key': getSafeKey()
                     }
                 });
                 
@@ -393,7 +402,7 @@
                 const awnser = await fetch(`${API_URL}/orders`, {
                     method: 'GET',
                     headers: {
-                        'X-API-Key': API_KEY // Safe sending key method
+                        'X-API-Key': getSafeKey()
                     }
                 });
         
@@ -490,7 +499,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-API-Key': API_KEY // Safe sending key method
+                        'X-API-Key': getSafeKey()
                     },
                     body: JSON.stringify({
                         product: product,
@@ -522,7 +531,7 @@
         function clearForm() {
             document.getElementById('product').value = '';
             document.getElementById('quantity').value = '';
-            document.getElementById('initial-status').value = 'Pending'; // FIXED ID
+            document.getElementById('initial-status').value = 'Pending'; 
         }
 
         async function updateStatus(id, newStatus) {
@@ -531,7 +540,7 @@
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-API-Key': API_KEY // Safe sending key method
+                        'X-API-Key': getSafeKey()
                     },
                     body: JSON.stringify({
                         status: newStatus
@@ -568,7 +577,7 @@
                 const response = await fetch(`${API_URL}/orders/${id}`, {
                     method: 'DELETE',
                     headers: {
-                        'X-API-Key': API_KEY // Safe sending key method
+                        'X-API-Key': getSafeKey()
                     }
                 });
 
