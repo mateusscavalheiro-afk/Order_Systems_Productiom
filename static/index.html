@@ -349,16 +349,27 @@
     <script>
         // URL API base Flask
         const API_URL = 'http://localhost:5000';
+        // API SAFE KEY
+        const API_KEY = 'senai-cibersistems-2026-safe-key'; 
 
         // ────────────────────────────────────────────────────────
         async function verifyStatus() {
             const badge = document.getElementById('status-badge');
             try {
-                const resp = await fetch(`${API_URL}/status`);
-                const data = await resp.json();
-                // app.py doesn't return total_orders, so we just show it's online
-                badge.textContent = `API Online`;
-                badge.className = 'online';
+                const resp = await fetch(`${API_URL}/status`, {
+                    method: 'GET',
+                    headers: {
+                        'X-API-Key': API_KEY // Safe sending key method
+                    }
+                });
+                
+                if (resp.ok) { // Verify API accepted the key (Status 200)
+                    badge.textContent = `API Online`;
+                    badge.className = 'online';
+                } else {
+                    badge.textContent = 'API Refused Key';
+                    badge.className = 'offline';
+                }
             } catch (error) {
                 badge.textContent = 'API Offline';
                 badge.className = 'offline';
@@ -375,6 +386,21 @@
             loading.classList.remove('ocult');
             table.classList.add('ocult');
             noData.classList.add('ocult');
+
+            try {
+                const awnser = await fetch(`${API_URL}/orders`, {
+                    method: 'GET',
+                    headers: {
+                        'X-API-Key': API_KEY // Enviando a chave aqui também!
+                    }
+                });
+        
+                if (!awnser.ok) {
+                    throw new Error('Não autorizado ou erro na API');
+                }
+
+                const orders = await awnser.json();
+                loading.classList.add('ocult');
 
             try {
                 const awnser = await fetch(`${API_URL}/orders`);
