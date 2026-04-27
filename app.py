@@ -132,13 +132,13 @@ def search_order(order_id):
         200 + JSON of order, if found.
         404 + error message, if it does not exist.
     """
-    conn = get_connection() # Open the bridge to database
+    conn = get_connection() # Open the gate to connect with database
     cursor = conn.cursor()  # The postman who works in there
     
     # The '?' switches the id in a safe way
     cursor.execute('SELECT * FROM orders WHERE id = ?', (order_id,)) # Execute an order in database SQLite
-    order = cursor.fetchone() 
-    conn.close()
+    order = cursor.fetchone() # Get the result from order
+    conn.close() # Close the gate
     
     # If ID doesn't exist, we show an error
     if order is None:
