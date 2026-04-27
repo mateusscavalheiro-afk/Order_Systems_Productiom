@@ -61,6 +61,13 @@ def aut_need(f):
 # they are essential for reusing common logic such as authentication, permission control, logging, timing, and error handling,
 # applied using the @ syntax
 
+# 200 - Sucess (GET / PUT / DELETE)
+# 201 - Sucess (POST)
+# 400 - Bad request 
+# 404 - Not Found
+# 500 - Intenal Server Error
+# 401 - Error in authenticate
+
 # Route Nº1 - Initial screen
 @app.route('/')
 
