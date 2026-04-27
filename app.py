@@ -7,6 +7,8 @@ import os
 from dotenv import load_dotenv as ldv
 from functools import wraps
 
+# Flask defines the server-side logic and endpoints, while Flask-CORS bypasses browser security restrictions to let different domains (like a React frontend and a Python backend) interact
+
 # Create an Flash's application instance
 app = Flask(__name__, static_folder='static', static_url_path='')
 
@@ -82,6 +84,7 @@ def status():
         "timestamp": datetime.datetime.now().strftime("%Y-%m-%d / %H:%M:%S"),
         "message": "Hello Factory, API working!"
     })
+
 
 # Route Nº3 - List all orders (GET)
 @app.route('/orders', methods=['GET'])
