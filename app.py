@@ -56,6 +56,11 @@ def aut_need(f):
         return f(*args, **kwargs)
     return formatter
 
+#In Python, decorators are special functions that “wrap” other functions, 
+# adding extra behavior without altering the original code. In APIs, 
+# they are essential for reusing common logic such as authentication, permission control, logging, timing, and error handling,
+# applied using the @ syntax
+
 # Route Nº1 - Initial screen
 @app.route('/')
 
